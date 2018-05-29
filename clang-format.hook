@@ -1,25 +1,16 @@
 #!/bin/bash
+# Instead of remembering to clang-format on files you change/commit, do it automatically.
+# Caution: This formats all of the file, not just the lines changed.
+#          If you don't want to skip this, use `git commit --no-verify` or `git commit -n`.
+#
+# Install Steps:
+# - verify that clang-format-3.8 is installed `clang-format-3.8 --version`
+# - copy this into a file in `.git/hooks/pre-commit`
+# - mark the file as executable `chmod +x .git/hooks/pre-commit`
 
-STYLE=$(git config --get hooks.clangformat.style)
-if [ -n "${STYLE}" ] ; then
-  STYLEARG="-style=${STYLE}"
-else
-  STYLEARG=""
-fi
-
-format_file() {
-  file="${1}"
-  git clang-format -i ${STYLEARG} ${1}
-  git add ${1}
-}
-
-case "${1}" in
-  --about )
-    echo "Runs clang-format on source files"
-    ;;
-  * )
-    for file in `git diff-index --cached --name-only HEAD` ; do
-      format_file "${file}"
-    done
-    ;;
-esac
+echo "Pre-commit clang-format"
+for file in `git diff-index --cached --name-only HEAD` ; do
+  git clang-format-3.8 "${file}"
+  git add "${file}"
+  echo "Formatted ${file}"
+done
