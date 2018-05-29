@@ -9,7 +9,7 @@ fi
 
 format_file() {
   file="${1}"
-  clang-format -i ${STYLEARG} ${1}
+  git clang-format -i ${STYLEARG} ${1}
   git add ${1}
 }
 
